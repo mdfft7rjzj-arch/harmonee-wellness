@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Framework — Harmonee Wellness</title>
+<!--
+  HOW TO USE THIS FILE
+  1. Put it in your project's  public/  folder as  framework.html
+  2. It will be live at  https://your-site/framework.html
+  3. Point the "Explore the Framework" button at  /framework.html
+  Everywhere you see  EDIT:  is a spot to replace with your own words.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#EFEBDD;
+    --cream-deep:#E6E0CE;
+    --card:#FBF8F0;
+    --ink:#2E2A20;
+    --body:#5C5547;
+    --sage:#56624E;
+    --sage-deep:#414B39;
+    --sage-pale:#DCE3D3;
+    --sage-pale-ink:#46523D;
+    --clay:#A8703F;
+    --line:rgba(46,42,32,0.12);
+    --radius:22px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--body);
+    font-family:"Inter",system-ui,-apple-system,sans-serif;
+    font-size:18px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:0 22px;}
+
+  /* header */
+  header{
+    background:var(--cream);
+    border-bottom:1px solid var(--line);
+    position:sticky;top:0;z-index:10;
+    backdrop-filter:saturate(120%) blur(6px);
+  }
+  .bar{display:flex;align-items:center;gap:14px;padding:16px 0;}
+  .logo{
+    width:46px;height:46px;border-radius:50%;
+    background:linear-gradient(140deg,#8a8a5a,#c9a86a);
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-family:"Fraunces",serif;font-size:22px;font-weight:600;
+    flex:0 0 auto;
+  }
+  .brand{font-family:"Fraunces",serif;font-weight:600;color:var(--ink);font-size:20px;}
+
+  /* labels (replaces the old monospace tags) */
+  .label{
+    font-size:12.5px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--clay);
+  }
+
+  /* hero */
+  .hero{padding:56px 0 40px;}
+  .hero h1{
+    font-family:"Fraunces",serif;font-weight:500;color:var(--ink);
+    font-size:clamp(40px,11vw,62px);line-height:1.04;letter-spacing:-0.01em;
+    margin:14px 0 0;
+  }
+  .lede{font-size:19px;margin:22px 0 0;max-width:34ch;}
+
+  /* cards */
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:30px 26px;
+    margin:22px 0;
+    box-shadow:0 1px 2px rgba(46,42,32,.04);
+  }
+  .card h2{
+    font-family:"Fraunces",serif;font-weight:500;color:var(--ink);
+    font-size:clamp(26px,7vw,34px);line-height:1.1;margin:10px 0 0;
+  }
+  .card h3{
+    font-family:"Inter",sans-serif;font-weight:600;color:var(--ink);
+    font-size:15px;letter-spacing:.01em;margin:22px 0 6px;
+  }
+  .card p{margin:10px 0 0;}
+  .soft{color:var(--body);}
+
+  /* orientation card sits on a calmer ground */
+  .orient{background:var(--cream-deep);border-color:transparent;}
+  .orient ul{margin:14px 0 0;padding-left:0;list-style:none;}
+  .orient li{position:relative;padding-left:24px;margin:10px 0;}
+  .orient li::before{
+    content:"";position:absolute;left:2px;top:11px;
+    width:7px;height:7px;border-radius:50%;background:var(--sage);
+  }
+
+  /* jump nav */
+  .jump{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0 4px;}
+  .jump a{
+    text-decoration:none;color:var(--sage-pale-ink);background:var(--sage-pale);
+    padding:9px 16px;border-radius:999px;font-size:14px;font-weight:500;
+  }
+  .jump a:hover{background:#d2dac8;}
+
+  /* phase number */
+  .phase-no{font-family:"Fraunces",serif;font-size:15px;color:var(--clay);font-weight:600;}
+
+  /* practitioner note */
+  .practitioner{
+    margin-top:22px;padding:16px 18px;border-radius:14px;
+    background:rgba(86,98,78,.08);border:1px solid rgba(86,98,78,.18);
+  }
+  .practitioner .label{color:var(--sage-deep);}
+  .practitioner p{font-size:15.5px;margin-top:6px;}
+
+  /* coming-soon chip (deliberately not a link, so it can't dead-end) */
+  .chip{
+    display:inline-block;margin-top:18px;
+    font-size:13px;font-weight:500;letter-spacing:.02em;
+    color:#8a8275;background:rgba(46,42,32,.06);
+    padding:7px 14px;border-radius:999px;
+  }
+
+  /* buttons */
+  .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px;}
+  .btn{
+    display:inline-block;text-decoration:none;text-align:center;
+    padding:16px 26px;border-radius:999px;font-weight:600;font-size:16px;
+  }
+  .btn-primary{background:var(--sage);color:#fff;}
+  .btn-primary:hover{background:var(--sage-deep);}
+  .btn-ghost{background:var(--card);color:var(--ink);border:1px solid var(--line);}
+
+  /* close + safety */
+  .close h2{margin-top:0;}
+  .safety{
+    background:var(--cream-deep);border-radius:var(--radius);
+    padding:26px;margin:30px 0 60px;
+  }
+  .safety .label{color:var(--clay);}
+  .safety p{font-size:15.5px;}
+
+  a:focus-visible,.jump a:focus-visible{outline:3px solid var(--clay);outline-offset:3px;border-radius:6px;}
+
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}}
+</style>
+</head>
+<body>
+
+  <header>
+    <div class="wrap bar">
+      <div class="logo">H</div>
+      <div class="brand">Harmonee Wellness</div>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <section class="hero">
+      <span class="label">The Framework · Self-paced</span>
+      <h1>Pause. Regulate.<br>Reconnect. Return.</h1>
+      <!-- EDIT: one or two sentences in your own voice -->
+      <p class="lede soft">A gentle, self-paced way through the four movements at the heart of Harmonee — to come back to yourself, a little at a time.</p>
+    </section>
+
+    <section class="card orient">
+      <span class="label">Before you begin</span>
+      <h2>How to use this</h2>
+      <ul>
+        <li>Go at your own pace. There's no order you have to follow and nothing to finish.</li>
+        <li>You can stop at any point. Closing the page is always allowed.</li>
+        <li>Take what fits and leave what doesn't. You know yourself best.</li>
+        <li>This is educational and reflective — it isn't therapy or crisis support.</li>
+      </ul>
+    </section>
+
+    <nav class="jump" aria-label="The four phases">
+      <a href="#pause">Pause</a>
+      <a href="#regulate">Regulate</a>
+      <a href="#reconnect">Reconnect</a>
+      <a href="#return">Return</a>
+    </nav>
+
+    <!-- ============ PHASE 1 ============ -->
+    <section class="card" id="pause">
+      <span class="phase-no">Phase 01</span>
+      <h2>Pause</h2>
+      <!-- EDIT: replace any of the copy below with your own lesson material -->
+      <p class="soft">Before anything changes, there's a pause — the small gap between what happens and what we do next. Pausing isn't doing nothing; it's making room.</p>
+
+      <h3>You might notice</h3>
+      <p class="soft">A pull to react quickly, to fix or explain. A breath that's higher and shorter than usual. The sense that there's no time — when often there is a little more than it feels.</p>
+
+      <h3>A small practice</h3>
+      <p class="soft">Name one thing you can see and one thing you can hear, slowly. That's the whole practice. You've already paused.</p>
+
+      <div class="practitioner">
+        <span class="label">For practitioners</span>
+        <p>Useful as a session opener or a between-session anchor. EDIT: add how you'd frame this with a client.</p>
+      </div>
+
+      <span class="chip">Companion worksheet · coming soon</span>
+    </section>
+
+    <!-- ============ PHASE 2 ============ -->
+    <section class="card" id="regulate">
+      <span class="phase-no">Phase 02</span>
+      <h2>Regulate</h2>
+      <p class="soft">Regulation isn't about feeling calm on command. It's about helping your body feel a little safer, so the rest has room to settle.</p>
+
+      <h3>You might notice</h3>
+      <p class="soft">Tension that lives somewhere specific — jaw, shoulders, stomach. Energy that feels too high or strangely flat. Both are information, not failure.</p>
+
+      <h3>A small practice</h3>
+      <p class="soft">Let your exhale be a little longer than your inhale, a few times. Longer out-breaths gently tell the body it's okay to ease.</p>
+
+      <div class="practitioner">
+        <span class="label">For practitioners</span>
+        <p>EDIT: note grounding or co-regulation options you'd offer here.</p>
+      </div>
+
+      <span class="chip">Companion worksheet · coming soon</span>
+    </section>
+
+    <!-- ============ PHASE 3 ============ -->
+    <section class="card" id="reconnect">
+      <span class="phase-no">Phase 03</span>
+      <h2>Reconnect</h2>
+      <p class="soft">Once there's a little more steadiness, we can turn gently back toward ourselves — toward what we feel, need, and care about.</p>
+
+      <h3>You might notice</h3>
+      <p class="soft">A feeling that's been waiting to be named. A need that got set aside. Something that matters to you, quietly asking for attention.</p>
+
+      <h3>A small practice</h3>
+      <p class="soft">Finish this once, honestly: "Right now, I could use a little more ______." No need to act on it yet — just let it be true.</p>
+
+      <div class="practitioner">
+        <span class="label">For practitioners</span>
+        <p>EDIT: add reflection prompts or values work you'd pair with this.</p>
+      </div>
+
+      <span class="chip">Companion worksheet · coming soon</span>
+    </section>
+
+    <!-- ============ PHASE 4 ============ -->
+    <section class="card" id="return">
+      <span class="phase-no">Phase 04</span>
+      <h2>Return</h2>
+      <p class="soft">Returning is carrying a little of this back into an ordinary day — not as a grand change, but as one small, doable thing.</p>
+
+      <h3>You might notice</h3>
+      <p class="soft">The urge to overhaul everything at once. Gently, smaller is more sustainable. One step you'd actually take beats ten you won't.</p>
+
+      <h3>A small practice</h3>
+      <p class="soft">Choose one kind, realistic thing for the next hour. Just the next hour. You can choose again after that.</p>
+
+      <div class="practitioner">
+        <span class="label">For practitioners</span>
+        <p>EDIT: add how you'd support integration between sessions.</p>
+      </div>
+
+      <span class="chip">Companion worksheet · coming soon</span>
+    </section>
+
+    <!-- ============ CLOSE ============ -->
+    <section class="card close">
+      <span class="label">A soft close</span>
+      <h2>Returning, again and again</h2>
+      <p class="soft">This isn't a path you complete once. Most of us move through these four many times, in big and small ways. Coming back to the beginning isn't starting over — it's how the practice works.</p>
+      <div class="actions">
+        <!-- EDIT: point these at a real reflection tool / signup when ready -->
+        <a class="btn btn-primary" href="/">Try a reflection tool</a>
+        <a class="btn btn-ghost" href="/">Back to home</a>
+      </div>
+    </section>
+
+    <section class="safety">
+      <span class="label">Safety note</span>
+      <p>These tools are for education, reflection, and self-care support only. They do not replace professional care. If something feels urgent or you're in immediate danger, call or text 988 in the U.S., or your local emergency number.</p>
+    </section>
+
+  </main>
+</body>
+</html>
