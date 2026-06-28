@@ -1363,7 +1363,7 @@
           throw new Error(data.error || "Unable to complete reflection.");
         }
 
-        output.textContent = data.response;
+        output.textContent = data.reply || data.response || data.reflection;
       } catch (error) {
         output.textContent =
           "This demo is ready visually, but the AI reflection needs a deployed /api/claude serverless function to work. If this is urgent or you are in immediate danger, call 988 in the U.S. or your local emergency number.";
