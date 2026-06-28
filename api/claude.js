@@ -1,105 +1,92 @@
+// api/claude.js
+// Vercel Serverless Function that powers the "Generate Reflection" button.
+// Place this file at:  api/claude.js  (in your project root)
+
 export default async function handler(req, res) {
+  // Only allow POST requests
   if (req.method !== "POST") {
+    res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  try {
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-
-    if (!apiKey) {
-      return res.status(500).json({
-        error: "Server configuration error."
-      });
-    }
-
-    const { message, toolType } = req.body || {};
-
-    if (!message || typeof message !== "string") {
-      return res.status(400).json({
-        error: "Please enter a reflection prompt."
-      });
-    }
-
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-        "content-type": "application/json"
-      },
-      body: JSON.stringify({
-      model: "claude-3-haiku-20240307",
-        max_tokens: 800,
-        system: getSystemPrompt(toolType),
-        messages: [
-          {
-            role: "user",
-            content: message
-          }
-        ]
-      })
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error("Anthropic API error:", data);
-      return res.status(response.status).json({
-        error: "Unable to complete this reflection right now."
-      });
-    }
-
-    const text =
-      data?.content?.find((item) => item.type === "text")?.text ||
-      "No reflection was generated.";
-
-    return res.status(200).json({
-      response: text
-    });
-  } catch (error) {
-    console.error("Function error:", error);
+  // Read the API key from Vercel environment variables (set in step 3 below)
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
     return res.status(500).json({
-      error: "Something went wrong while processing your reflection."
+      error:
+        "Missing ANTHROPIC_API_KEY. Add it in Vercel → Settings → Environment Variables, then redeploy.",
     });
   }
-}
 
-function getSystemPrompt(toolType) {
-  const basePrompt = `
-You support Harmonee Wellness, a trauma-informed, culturally aware wellness education brand.
+  // The request body may arrive already-parsed or as a raw string
+  let body = req.body;
+  if (typeof body === "string") {
+    try {
+      body = JSON.parse(body);
+    } catch {
+      body = {};
+    }
+  }
+  body = body || {};
 
-You provide educational reflection support only.
-You do not provide therapy, diagnosis, treatment, crisis intervention, or medical advice.
-Use a warm, grounded, emotionally intelligent, inclusive tone.
-Encourage self-reflection, nervous system awareness, emotional regulation, and practical self-care.
-Do not claim to be the user's therapist.
-Do not provide clinical diagnosis.
-If a user expresses immediate danger, self-harm, or crisis, encourage emergency services or 988 in the U.S.
-`;
+  // Accept several common field names so this matches your frontend
+  const userText = (
+    body.feeling ||
+    body.input ||
+    body.text ||
+    body.prompt ||
+    body.message ||
+    ""
+  )
+    .toString()
+    .trim();
 
-  const prompts = {
-    "self-care-rhythm": `
-${basePrompt}
+  if (!userText) {
+    return res.status(400).json({ error: "No input was provided." });
+  }
 
-The user is using the Personalized Self-Care Rhythm tool.
-Help them create a gentle, realistic self-care rhythm based on energy, responsibilities, sensory needs, emotional capacity, and daily life.
-`,
+  const system =
+    "You are a warm, grounded wellness companion. The user shares a feeling or " +
+    "situation in a few words. Offer a short, gentle reflection (3-5 sentences): " +
+    "acknowledge the feeling, offer one calming reframe or grounding idea, and one " +
+    "small, doable next step. Be kind and human, not clinical. Do not diagnose or " +
+    "give medical advice. If the message suggests crisis or self-harm, gently " +
+    "encourage reaching out to a trusted person or, in the U.S., calling or texting 988.";
 
-    "journal-check-in": `
-${basePrompt}
+  try {
+    const r = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 600,
+        system,
+        messages: [{ role: "user", content: `I'm feeling: ${userText}` }],
+      }),
+    });
 
-The user is using the Journal Reflection Check-In tool.
-Help them name emotions, notice patterns, and reflect without shame.
-Offer thoughtful prompts, not clinical interpretation.
-`,
+    if (!r.ok) {
+      const detail = await r.text();
+      return res.status(r.status).json({ error: "Claude API error", detail });
+    }
 
-    "hygiene-snapshot": `
-${basePrompt}
+    const data = await r.json();
+    const reflection = (data.content || [])
+      .map((b) => (b.type === "text" ? b.text : ""))
+      .join("")
+      .trim();
 
-The user is using the Mental Health Hygiene Snapshot tool.
-Help them reflect on stress, rest, support, boundaries, emotional capacity, regulation, and care needs.
-`
-  };
-
-  return prompts[toolType] || basePrompt;
+    // Returned under a few key names so it matches whatever your frontend reads
+    return res
+      .status(200)
+      .json({ reflection, text: reflection, result: reflection });
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ error: "Request failed", detail: String(err) });
+  }
 }
